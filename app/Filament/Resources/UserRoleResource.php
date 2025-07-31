@@ -18,6 +18,8 @@ class UserRoleResource extends Resource
 {
     protected static ?string $model = UserRole::class;
 
+    protected static ?string $navigationGroup = 'User Management';
+
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
     public static function form(Form $form): Form
@@ -57,6 +59,7 @@ class UserRoleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

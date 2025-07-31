@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JobOrderResource\Pages;
-use App\Filament\Resources\JobOrderResource\RelationManagers;
+use App\Filament\Resources\JobOrderResource\RelationManagers\JobOrderServiceLaborsRelationManager;
+use App\Filament\Resources\JobOrderResource\RelationManagers\JobOrderPartsMaterialsRelationManager;
+use App\Filament\Resources\JobOrderResource\RelationManagers\JobOrderDocumentsRelationManager;
 use App\Models\JobOrder;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,12 +19,18 @@ use App\Models\Customer;
 use App\Models\Department;
 use App\Models\JobOrderStatusType;
 use Filament\Forms\Components\RichEditor;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
+use Filament\Support\Enums\IconPosition;
+use Log;
 
 class JobOrderResource extends Resource
 {
     protected static ?string $model = JobOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document';
+
+    protected static ?string $navigationGroup = 'Orders';
 
     public static function form(Form $form): Form
     {
@@ -81,19 +89,46 @@ class JobOrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('job_order_number')
+                    ->icon('heroicon-m-hashtag')
+                    ->iconPosition(IconPosition::Before)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customer.name')
+                    ->icon('heroicon-m-user')
+                    ->iconPosition(IconPosition::Before)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('jobOrderStatusType.name')
+                Tables\Columns\BadgeColumn::make('jobOrderStatusType.name')
                     ->label('Status')
+                    ->color(static function ($state): string {
+                        $data = JobOrderStatusType::where('name', $state)->first();
+                        $formattedData = str_replace([' ', '/', '-'], '_', $data->name);
+                        if ($data->color) {
+                            FilamentColor::register([
+                                $formattedData => $data->color
+                            ]);
+                            return $formattedData;
+                        } else {
+                            return 'info';
+                        }
+                    })
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('assignedDepartment.name')
+                    ->icon('heroicon-m-building-office-2')
+                    ->iconPosition(IconPosition::Before)
+                    ->label('Department')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('job_order_date')
+                    ->icon('heroicon-m-calendar')
+                    ->iconPosition(IconPosition::Before)
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('expected_start_date')
+                    ->icon('heroicon-m-calendar')
+                    ->iconPosition(IconPosition::Before)
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('expected_end_date')
+                    ->icon('heroicon-m-calendar')
+                    ->iconPosition(IconPosition::Before)
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -121,7 +156,9 @@ class JobOrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            JobOrderDocumentsRelationManager::class,
+            JobOrderServiceLaborsRelationManager::class,
+            JobOrderPartsMaterialsRelationManager::class,
         ];
     }
 

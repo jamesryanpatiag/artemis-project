@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('job_order_status_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->boolean('need_approver')->default(false);
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }

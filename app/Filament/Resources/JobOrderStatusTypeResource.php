@@ -13,10 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\ColorColumn;
 
 class JobOrderStatusTypeResource extends Resource
 {
     protected static ?string $model = JobOrderStatusType::class;
+    
+    protected static ?string $navigationGroup = 'Content Management';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -27,8 +30,11 @@ class JobOrderStatusTypeResource extends Resource
                 Section::make('Status')
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                    ->required(),
-                ])
+                        ->rules(['required']),
+                    Forms\Components\ColorPicker::make('color')
+                        ->rules(['required']),
+                    Forms\Components\Toggle::make('need_approver'),
+                ])->columns(2)
             ]);
     }
 
@@ -37,6 +43,10 @@ class JobOrderStatusTypeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\BooleanColumn::make('need_approver')
+                    ->searchable(),
+                Tables\Columns\ColorColumn::make('color')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -52,6 +62,7 @@ class JobOrderStatusTypeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

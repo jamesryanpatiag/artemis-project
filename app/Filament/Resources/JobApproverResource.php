@@ -20,6 +20,8 @@ class JobApproverResource extends Resource
 {
     protected static ?string $model = JobApprover::class;
 
+    protected static ?string $navigationGroup = 'Content Management';
+
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-circle';
 
     public static function form(Form $form): Form
@@ -29,14 +31,14 @@ class JobApproverResource extends Resource
                 Section::make('Job Approver')
                     ->icon('heroicon-o-arrow-up-circle')
                     ->schema([
+                        Forms\Components\Select::make('department_id')
+                            ->label('Department')
+                            ->options(Department::all()->pluck('name', 'id'))
+                            ->searchable(),
                         Forms\Components\Select::make('user_role_id')
                             ->label('Role')
                             ->options(UserRole::all()->pluck('name', 'id'))
                             ->searchable(),
-                        Forms\Components\Select::make('department_id')
-                            ->label('Department')
-                            ->options(Department::all()->pluck('name', 'id'))
-                            ->searchable()
                     ])->columns(2)
             ]);
     }
@@ -45,10 +47,10 @@ class JobApproverResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('approver_id')
+                Tables\Columns\TextColumn::make('department.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('job_order_status_type_id')
+                Tables\Columns\TextColumn::make('approver.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -65,6 +67,7 @@ class JobApproverResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

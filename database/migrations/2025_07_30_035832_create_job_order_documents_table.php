@@ -12,11 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_order_parts_materials', function (Blueprint $table) {
+        Schema::create('job_order_documents', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->longText('description')->nullable();
             $table->foreignIdFor(JobOrder::class);
-            $table->text('item');
-            $table->integer('quantity')->default(0);
+            $table->longText('uploaded_file');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_order_parts_materials');
+        Schema::dropIfExists('job_order_documents');
     }
 };

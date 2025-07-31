@@ -17,4 +17,9 @@ class JobApprover extends Model
     {
         return $this->belongsTo(JobOrderStatusType::class, 'job_order_status_type_id');
     }
+
+    public function department() 
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }
