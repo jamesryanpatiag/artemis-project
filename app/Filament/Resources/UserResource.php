@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,9 +40,14 @@ class UserResource extends Resource
                     Forms\Components\Select::make('roles')
                             ->relationship('roles', 'name')
                             ->preload(),
+                    Forms\Components\Select::make('department_id')
+                            ->label('Department')
+                            ->options(Department::all()->pluck('name', 'id'))
+                            ->searchable(),
                     Forms\Components\TextInput::make('password')
                         ->password()
                         ->required(),
+                    Forms\Components\Toggle::make('approver'),
                 ])
             ]);
     }
@@ -56,6 +62,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('department.name')
+                    ->searchable(),
+                Tables\Columns\BooleanColumn::make('approver')
+                        ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),

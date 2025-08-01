@@ -22,6 +22,8 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'email_verified_at',
         'password',
+        'department_id',
+        'approver'
     ];
 
     /**
@@ -50,5 +52,9 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasVerifiedEmail();
+    }
+
+    public function department() {
+        return $this->belongsTo(Department::class, 'department_id');
     }
 }

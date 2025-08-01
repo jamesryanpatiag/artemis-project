@@ -14,7 +14,7 @@ class JobOrderStatusTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $jobOrderStatusTypes = ['New Request/Open', 'Work in Progress', 'Complete', 'Closed', 'On-hold', 'Waiting for Approval', 'Cancelled', 'Void'];
+        $jobOrderStatusTypes = ['New Request/Open', 'Under Review', 'Work in Progress', 'For Approval', 'Approved', 'Complete', 'Closed', 'On-hold', 'Cancelled', 'Void'];
 
         foreach ($jobOrderStatusTypes as $jobOrderStatusType) {
             $data = new JobOrderStatusType();

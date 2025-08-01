@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('job_approvers', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(UserRole::class);
+            $table->integer('role_id');
             $table->foreignIdFor(Department::class);
             $table->timestamps();
         });

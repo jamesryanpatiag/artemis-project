@@ -64,6 +64,7 @@ class JobOrderResource extends Resource
                         Forms\Components\DatePicker::make('expected_start_date')
                             ->rules(['required']),
                         Forms\Components\DatePicker::make('expected_end_date')
+                            ->label('Commit Date')
                             ->rules(['required']),
                         Forms\Components\Select::make('assigned_department_id')
                             ->label('Assigned Department')
@@ -144,6 +145,7 @@ class JobOrderResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('expected_end_date')
                     ->icon('heroicon-m-calendar')
+                    ->label('Commit Date')
                     ->iconPosition(IconPosition::Before)
                     ->date()
                     ->sortable(),

@@ -13,4 +13,8 @@ class JobOrderStatusType extends Model
     public function jobOrderStatusTypeSteps() {
         return $this->hasMany(JobOrderStatusTypeStep::class, 'parent_id_job_status_type_id', 'id');
     }
+
+    public function needApproval() {
+        return $this->need_approver;
+    }
 }
