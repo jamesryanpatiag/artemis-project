@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserRoleSeeder::class,
             JobOrderStatusTypeSeeder::class,
             DepartmentSeeder::class
         ]);
@@ -23,7 +22,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@artemis.com',
             'email_verified_at' => now(),
-            'user_role_id' => 1,
             'password' => bcrypt('!Password@123'),
         ]);
 
