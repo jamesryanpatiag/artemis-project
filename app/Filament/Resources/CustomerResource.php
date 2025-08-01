@@ -34,14 +34,26 @@ class CustomerResource extends Resource
                         Forms\Components\TextInput::make('contact_number'),
                         Forms\Components\Textarea::make('address')
                             ->columnSpanFull(),
-                    ])
-            ]);
+                    ])->columnSpan(3),
+                Section::make('Logo/Photo')
+                    ->icon('heroicon-o-photo')
+                    ->schema([
+                        Forms\Components\FileUpload::make('image')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('local')
+                            ->directory('uploads')
+                            ->visibility('public')
+                            ->downloadable()
+                    ])->columnSpan(1)
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')

@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\RichEditor;
 
 class JobOrderDocumentsRelationManager extends RelationManager
@@ -21,16 +22,19 @@ class JobOrderDocumentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+                Section::make()
+                ->schema([
+                    Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                RichEditor::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\FileUpload::make('uploaded_file')
-                    ->disk('local')
-                    ->directory('uploads')
-                    ->visibility('public')
-                    ->downloadable(),
+                    RichEditor::make('description')
+                        ->columnSpanFull(),
+                    Forms\Components\FileUpload::make('uploaded_file')
+                        ->disk('local')
+                        ->directory('uploads')
+                        ->visibility('public')
+                        ->downloadable(),
+                ])
             ]);
     }
 
@@ -47,7 +51,7 @@ class JobOrderDocumentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Upload Document'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

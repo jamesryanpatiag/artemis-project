@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\JobOrderStatusType;
 
 return new class extends Migration
 {
@@ -11,14 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('job_order_status_type_steps', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->nullable();
-            $table->string('contact_number')->nullable();
-            $table->text('address')->nullable();
-            $table->string('password')->nullable();
-            $table->longText('image')->nullable();
+            $table->foreignIdFor(JobOrderStatusType::class, 'parent_id_job_status_type_id');
+            $table->foreignIdFor(JobOrderStatusType::class, 'child_job_status_type_id');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('job_order_status_type_steps');
     }
 };

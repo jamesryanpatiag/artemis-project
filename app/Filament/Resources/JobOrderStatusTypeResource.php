@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\JobOrderStatusTypeResource\Pages;
 use App\Filament\Resources\JobOrderStatusTypeResource\RelationManagers;
+use App\Filament\Resources\JobOrderStatusTypeStepResource\RelationManagers\JobOrderStatusTypeStepsRelationManager;
 use App\Models\JobOrderStatusType;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -44,6 +45,11 @@ class JobOrderStatusTypeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('job_order_status_type_steps_count')
+                    ->label('Steps')
+                    ->counts('jobOrderStatusTypeSteps')
+                    ->badge()
+                    ->searchable(),
                 Tables\Columns\BooleanColumn::make('need_approver')
                     ->searchable(),
                 Tables\Columns\ColorColumn::make('color')
@@ -74,7 +80,7 @@ class JobOrderStatusTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            JobOrderStatusTypeStepsRelationManager::class
         ];
     }
 

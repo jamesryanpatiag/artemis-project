@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class JobOrderServiceLaborsRelationManager extends RelationManager
 {
@@ -20,12 +21,15 @@ class JobOrderServiceLaborsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('description')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('hours')
-                    ->required()
-                    ->maxLength(255),
+                Section::make()
+                ->schema([
+                    Forms\Components\TextInput::make('description')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('hours')
+                        ->required()
+                        ->maxLength(255),
+                    ])
             ]);
     }
 
@@ -41,7 +45,7 @@ class JobOrderServiceLaborsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Add Service/Labor'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

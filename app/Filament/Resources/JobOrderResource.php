@@ -7,6 +7,7 @@ use App\Filament\Resources\JobOrderResource\RelationManagers\JobOrderServiceLabo
 use App\Filament\Resources\JobOrderResource\RelationManagers\JobOrderPartsMaterialsRelationManager;
 use App\Filament\Resources\JobOrderResource\RelationManagers\JobOrderDocumentsRelationManager;
 use App\Models\JobOrder;
+use App\Models\JobOrderStatusTypeStep;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,6 +23,8 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Enums\IconPosition;
+use Filament\Forms\Get;
+use DB;
 use Log;
 
 class JobOrderResource extends Resource
@@ -77,7 +80,20 @@ class JobOrderResource extends Resource
                         Forms\Components\TextInput::make('job_order_number')->rules(['required']),
                         Forms\Components\Select::make('job_order_status_type_id')
                             ->label('Job Order Status Type')
-                            ->options(JobOrderStatusType::all()->pluck('name', 'id'))
+                            // ->options(JobOrderStatusType::all()->pluck('name', 'id'))
+                            ->options(function () use ($form) {
+                                if ($form->getRecord() != null) {
+                                    $childData = JobOrderStatusTypeStep::join('job_order_status_types as parent', 'parent.id', 'parent_id_job_status_type_id')
+                                        ->join('job_order_status_types as child', 'child.id', 'child_job_status_type_id')
+                                        ->where('parent_id_job_status_type_id', $form->getRecord()->job_order_status_type_id)
+                                        ->select('child.name', 'child.id');
+                                    $parentData = JobOrderStatusType::where('id', $form->getRecord()->job_order_status_type_id)
+                                        ->union($childData)
+                                        ->pluck('name', 'id');
+                                    return $parentData;   
+                                }
+                                return JobOrderStatusType::where('id', 1)->pluck('name', 'id');
+                            })
                             ->searchable()
                             ->rules(['required'])
                     ])->columnSpan(1)

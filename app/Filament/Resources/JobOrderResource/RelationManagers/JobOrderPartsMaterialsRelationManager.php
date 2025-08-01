@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
 
 class JobOrderPartsMaterialsRelationManager extends RelationManager
 {
@@ -20,13 +21,16 @@ class JobOrderPartsMaterialsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('item')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('quantity')
-                    ->numeric()
-                    ->required()
-                    ->maxLength(255),
+                Section::make()
+                ->schema([
+                    Forms\Components\TextInput::make('item')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('quantity')
+                        ->numeric()
+                        ->required()
+                        ->maxLength(255),
+                ])
             ]);
     }
 
@@ -42,7 +46,7 @@ class JobOrderPartsMaterialsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Add Parts/Material'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
