@@ -19,7 +19,12 @@ class JobOrderStatusTypeSeeder extends Seeder
         foreach ($jobOrderStatusTypes as $jobOrderStatusType) {
             $data = new JobOrderStatusType();
             $data->name = $jobOrderStatusType;
+            $data->color = $this->generateRandomHexColor();
             $data->save();
         }
+    }
+
+    private function generateRandomHexColor() {
+        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
     }
 }

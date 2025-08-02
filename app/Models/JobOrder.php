@@ -9,9 +9,14 @@ use App\Models\JobOrderServiceLabor;
 use App\Models\JobOrderPartsMaterial;
 use App\Models\JobOrderDocument;
 use App\Models\PriorityStatus;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\Traits\HasActivity;
+use Spatie\Activitylog\LogOptions;
 
 class JobOrder extends Model
 {
+    use LogsActivity;
+
     protected $guarded = [];
 
     public function customer() 
@@ -44,5 +49,13 @@ class JobOrder extends Model
 
     public function jobOrderDocuments() {
         return $this->hasMany(JobOrderDocument::class, 'job_order_id', 'id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+                ->logOnly(['*'])
+                ->logExcept(['updated_at'])
+                ->logOnlyDirty();
     }
 }
