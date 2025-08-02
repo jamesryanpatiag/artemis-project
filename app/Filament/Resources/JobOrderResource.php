@@ -18,11 +18,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use App\Models\Customer;
 use App\Models\Department;
+use App\Models\PriorityStatus;
 use App\Models\JobOrderStatusType;
 use Filament\Forms\Components\RichEditor;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Enums\IconPosition;
+use Illuminate\Support\Facades\Cache;
 use Filament\Forms\Get;
 use DB;
 use Log;
@@ -71,6 +73,21 @@ class JobOrderResource extends Resource
                             ->options(Department::all()->pluck('name', 'id'))
                             ->searchable()
                             ->rules(['required']),
+                        Forms\Components\Select::make('priority_status_id')
+                            ->label('Priority Status')
+                            ->allowHtml()
+                            ->options(function () use ($form) {
+                                $items = [];
+                                $priorityStatuses  = Cache::remember('priority_statuses', 600, function () {
+                                    return PriorityStatus::get();
+                                });
+                                foreach ($priorityStatuses as $priorityStatus) {
+                                    $items[$priorityStatus->id] = '<div style="background-color: ' . $priorityStatus->color . '; width: 13px; height: 13px;display:inline-block"></div> ' . $priorityStatus->name;
+                                }
+                                return $items;
+                            })
+                            ->searchable()
+                            ->rules(['required']),
                         RichEditor::make('work_description')
                             ->rules(['required'])
                             ->columnSpanFull(),
@@ -79,19 +96,26 @@ class JobOrderResource extends Resource
                     ->icon('heroicon-o-information-circle')
                     ->schema([
                         Forms\Components\TextInput::make('job_order_number')->rules(['required']),
+                        Forms\Components\TextInput::make('po_number')->label('PO Number'),
                         Forms\Components\Select::make('job_order_status_type_id')
                             ->label('Job Order Status Type')
-                            // ->options(JobOrderStatusType::all()->pluck('name', 'id'))
+                            ->allowHtml()
                             ->options(function () use ($form) {
                                 if ($form->getRecord() != null) {
                                     $childData = JobOrderStatusTypeStep::join('job_order_status_types as parent', 'parent.id', 'parent_id_job_status_type_id')
                                         ->join('job_order_status_types as child', 'child.id', 'child_job_status_type_id')
                                         ->where('parent_id_job_status_type_id', $form->getRecord()->job_order_status_type_id)
-                                        ->select('child.name', 'child.id');
-                                    $parentData = JobOrderStatusType::where('id', $form->getRecord()->job_order_status_type_id)
+                                        ->select('child.name', 'child.id', 'child.color');
+                                    $statuses = JobOrderStatusType::where('id', $form->getRecord()->job_order_status_type_id)
                                         ->union($childData)
-                                        ->pluck('name', 'id');
-                                    return $parentData;   
+                                        ->select('name', 'id', 'color')
+                                        ->get();
+
+                                    $items = [];
+                                    foreach ($statuses as $status) {
+                                        $items[$status->id] = '<div style="background-color: ' . $status->color . '; width: 13px; height: 13px;display:inline-block"></div> ' . $status->name;
+                                    }
+                                    return $items;
                                 }
                                 return JobOrderStatusType::where('id', 1)->pluck('name', 'id');
                             })
@@ -117,6 +141,21 @@ class JobOrderResource extends Resource
                     ->label('Status')
                     ->color(static function ($state): string {
                         $data = JobOrderStatusType::where('name', $state)->first();
+                        $formattedData = str_replace([' ', '/', '-'], '_', $data->name);
+                        if ($data->color) {
+                            FilamentColor::register([
+                                $formattedData => $data->color
+                            ]);
+                            return $formattedData;
+                        } else {
+                            return 'info';
+                        }
+                    })
+                    ->sortable(),
+                Tables\Columns\BadgeColumn::make('priorityStatus.name')
+                    ->label('Priority')
+                    ->color(static function ($state): string {
+                        $data = PriorityStatus::where('name', $state)->first();
                         $formattedData = str_replace([' ', '/', '-'], '_', $data->name);
                         if ($data->color) {
                             FilamentColor::register([

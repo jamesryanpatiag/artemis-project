@@ -2,42 +2,44 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\JobOrderStatusTypeResource\Pages;
-use App\Filament\Resources\JobOrderStatusTypeResource\RelationManagers;
-use App\Filament\Resources\JobOrderStatusTypeStepResource\RelationManagers\JobOrderStatusTypeStepsRelationManager;
-use App\Models\JobOrderStatusType;
+use App\Filament\Resources\PriorityStatusResource\Pages;
+use App\Filament\Resources\PriorityStatusResource\RelationManagers;
+use App\Models\PriorityStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\ColorColumn;
+use Filament\Forms\Components\Section;
 
-class JobOrderStatusTypeResource extends Resource
+
+class PriorityStatusResource extends Resource
 {
-    protected static ?string $model = JobOrderStatusType::class;
-    
+    protected static ?string $model = PriorityStatus::class;
+
     protected static ?string $navigationGroup = 'Content Management';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Status')
-                ->schema([
-                    Forms\Components\TextInput::make('name')
-                        ->rules(['required'])
-                        ->columnSpan(4),
-                    Forms\Components\ColorPicker::make('color')
-                        ->rules(['required'])
-                        ->columnSpan(1),
-                    Forms\Components\Toggle::make('need_approver'),
-                ])->columns(5)
+                Section::make('Customer Details')
+                    ->icon('heroicon-o-building-office-2')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan(4),
+                        Forms\Components\ColorPicker::make('color')
+                            ->rules(['required'])
+                            ->columnSpan(1),
+                    ])->columns(5)
             ]);
     }
 
@@ -46,13 +48,6 @@ class JobOrderStatusTypeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('job_order_status_type_steps_count')
-                    ->label('Steps')
-                    ->counts('jobOrderStatusTypeSteps')
-                    ->badge()
-                    ->searchable(),
-                Tables\Columns\BooleanColumn::make('need_approver')
                     ->searchable(),
                 Tables\Columns\ColorColumn::make('color')
                     ->searchable(),
@@ -70,7 +65,6 @@ class JobOrderStatusTypeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -82,16 +76,16 @@ class JobOrderStatusTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            JobOrderStatusTypeStepsRelationManager::class
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListJobOrderStatusTypes::route('/'),
-            'create' => Pages\CreateJobOrderStatusType::route('/create'),
-            'edit' => Pages\EditJobOrderStatusType::route('/{record}/edit'),
+            'index' => Pages\ListPriorityStatuses::route('/'),
+            'create' => Pages\CreatePriorityStatus::route('/create'),
+            'edit' => Pages\EditPriorityStatus::route('/{record}/edit'),
         ];
     }
 }
