@@ -93,8 +93,9 @@ class JobOrderResource extends Resource
                             })
                             ->searchable()
                             ->rules(['required']),
-                        RichEditor::make('work_description')
+                        Forms\Components\TextArea::make('work_description')
                             ->rules(['required'])
+                            ->rows(5)
                             ->columnSpanFull(),
                     ])->columns(2)->columnSpan(3),
                 Section::make('Info')

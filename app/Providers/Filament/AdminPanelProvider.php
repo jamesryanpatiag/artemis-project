@@ -32,12 +32,12 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->colors([
-                'danger' => Color::Rose, // Using a predefined Tailwind color
-                'gray' => "#403D3D",
-                'info' => Color::Blue,
-                'primary' =>'#e2c56d',
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
+                // 'danger' => Color::Rose, // Using a predefined Tailwind color
+                // 'gray' => "#403D3D",
+                // 'info' => Color::Blue,
+                'primary' => '#c7a781',
+                // 'success' => Color::Emerald,
+                // 'warning' => Color::Orange,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
