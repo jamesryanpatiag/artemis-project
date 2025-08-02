@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile()
             ->colors([
                 'danger' => Color::Rose, // Using a predefined Tailwind color
                 'gray' => "#403D3D",
@@ -63,6 +64,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentShieldPlugin::make(),
             ])
+            ->databaseNotifications()
             ->maxContentWidth(MaxWidth::Full)
             ->brandLogo(asset('images/artemis-logo.png'))
             ->brandLogoHeight('3.5rem')

@@ -25,6 +25,10 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Support\Facades\Cache;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\ExportBulkAction;
+use App\Filament\Exports\JobOrderExporter;
 use Filament\Forms\Get;
 use DB;
 use Log;
@@ -207,6 +211,7 @@ class JobOrderResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()->exporter(JobOrderExporter::class),
                 ]),
             ]);
     }

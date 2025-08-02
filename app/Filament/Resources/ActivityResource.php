@@ -75,14 +75,15 @@ class ActivityResource extends Resource
                     ->label('From:')
                     ->state(function ($record): string {
                         $properties = $record['properties'];
-                        $html = '<ul>';
-                        foreach ($properties['old'] as $key => $value) {
-                            $html .= '<li>' . self::translateColumn($key) . ' : ' . self::translateColumnValue($key, $value) . '</li>';
+                        if (isset($properties['old'])) {
+                            $html = '<ul>';
+                            foreach ($properties['old'] as $key => $value) {
+                                $html .= '<li style="font-size:12px">' . self::translateColumn($key) . ' : ' . self::translateColumnValue($key, $value) . '</li>';
+                            }
+                            $html .= "</ul>";
+                            return $html;
                         }
-                        $html .= "</ul>";
-                        
-                        Log::info($properties['attributes']);
-                        return $html;
+                        return "";
                     })
                     ->html()
                     ->wrap(),
@@ -92,7 +93,7 @@ class ActivityResource extends Resource
                         $properties = $record['properties'];
                         $html = '<ul>';
                         foreach ($properties['attributes'] as $key => $value) {
-                            $html .= '<li>' . self::translateColumn($key) . ' : ' . self::translateColumnValue($key, $value) . '</li>';
+                            $html .= '<li style="font-size:12px">' . self::translateColumn($key) . ' : ' . self::translateColumnValue($key, $value) . '</li>';
                         }
                         $html .= "</ul>";
                         return $html;
@@ -150,6 +151,9 @@ class ActivityResource extends Resource
     public static function translateColumn($column) {
         
         switch ($column) {
+            case 'id':
+                return 'ID';
+            break;
             case 'customer_id':
                 return 'Customer';
             break;

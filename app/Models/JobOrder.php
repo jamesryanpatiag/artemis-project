@@ -55,7 +55,7 @@ class JobOrder extends Model
     {
         return LogOptions::defaults()
                 ->logOnly(['*'])
-                ->logExcept(['updated_at'])
+                ->logExcept(['updated_at', 'created_at'])
                 ->logOnlyDirty();
     }
 }
